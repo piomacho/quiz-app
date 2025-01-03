@@ -38,7 +38,7 @@ export const fetchQuestions = createAsyncThunk<
     const params = new URLSearchParams({
       apiKey: "ULgwn5G3ilKp7nTpyX12EHKYrhIRZ9O2mb0RD8QK",
       limit: "20",
-      categor: activeCategory,
+      category: activeCategory,
       difficulty: difficultyLevel,
     });
 
