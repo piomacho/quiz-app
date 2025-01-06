@@ -110,6 +110,7 @@ export const Question = ({ question }: QuestionComponentType) => {
   const [state] = useState(() => new QuestionState());
 
   const handleAnswerChange = (answerKey: string) => {
+    console.log("klikn");
     if (isAnswered) return; // Nie pozwalaj na zmianę odpowiedzi po odpowiedzi
     state.handleAnswerChange(question.id, answerKey);
   };
@@ -122,7 +123,7 @@ export const Question = ({ question }: QuestionComponentType) => {
   const isCorrect = state.isAnswerCorrect(question, userAnswer);
 
   return (
-    <QuestionContainer key={question.id}>
+    <QuestionContainer data-test="question-component" key={question.id}>
       <QuestionTitle>{question.question}</QuestionTitle>
       <Description>{question.description}</Description>
       <DescriptionMultipleAnswers>
@@ -141,6 +142,7 @@ export const Question = ({ question }: QuestionComponentType) => {
               >
                 <input
                   type="checkbox"
+                  data-test="answer-checkbox"
                   name={`question-${question.id}`}
                   value={key}
                   onChange={() => handleAnswerChange(key)}
@@ -155,12 +157,16 @@ export const Question = ({ question }: QuestionComponentType) => {
         )}
       </AnswersContainer>
 
-      <SubmitButton onClick={() => setIsAnswered(true)} disabled={isAnswered}>
+      <SubmitButton
+        data-test="submit-button"
+        onClick={() => setIsAnswered(true)}
+        disabled={isAnswered}
+      >
         Submit
       </SubmitButton>
 
       {isAnswered ? (
-        <Feedback correct={isCorrect}>
+        <Feedback data-test="feedback-text" correct={isCorrect}>
           {isCorrect ? "Correct!" : "Incorrect!"}
         </Feedback>
       ) : null}

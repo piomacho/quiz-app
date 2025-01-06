@@ -64,7 +64,7 @@ export const DifficultyPicker = ({
   };
 
   return (
-    <PickerContainer>
+    <PickerContainer data-test="difficulty-level-picker">
       {options.map((option) => (
         <PickerButton
           key={option}

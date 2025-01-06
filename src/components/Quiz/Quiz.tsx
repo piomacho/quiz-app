@@ -73,7 +73,7 @@ const QuizForm = () => {
 
   return (
     <QuizContainer>
-      <Title>Quiz</Title>
+      <Title data-test="quiz-title">Quiz</Title>
       {/* Loader */}
       {status === "loading" && <Loader />}
 

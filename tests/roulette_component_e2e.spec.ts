@@ -1,51 +1,64 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Locator, Page } from "@playwright/test";
+import { waitForElementAndAssert } from "./helpers";
+async function waitForElement(page: Page, selector: string): Promise<Locator> {
+  const element = page.locator(selector);
+  await element.waitFor(); // Wait for the element to appear in the DOM
+  return element;
+}
 
 test.describe("Roulette Component", () => {
   test.beforeEach(async ({ page }) => {
-    // Zakładamy, że aplikacja działa lokalnie na porcie 3000
     await page.goto("http://localhost:3000");
+    await page.waitForLoadState("domcontentloaded");
   });
 
-  test("should display initial count value", async ({ page }) => {
-    // Locate the element using the data-test attribute
-    const countText = await page
-      .locator('[data-test="value_count"]')
-      .textContent();
-    expect(countText).toBe("Value: 0");
+  test("should display all elements on initial state", async ({ page }) => {
+    const roullette = await waitForElementAndAssert(
+      page,
+      '[data-test="roulette-wheel"]',
+      "visible"
+    );
+
+    const spinButton = await waitForElementAndAssert(
+      page,
+      '[data-test="spin-button"]',
+      "visible"
+    );
+    const levelPicker = await waitForElementAndAssert(
+      page,
+      '[data-test="difficulty-level-picker"]',
+      "visible"
+    );
+
+    await expect(roullette).toBeVisible();
+    await expect(spinButton).toBeVisible();
+    await expect(levelPicker).toBeVisible();
   });
 
-  // test("should update count to 2 when the second button is clicked", async ({
-  //   page,
-  // }) => {
-  //   await page.click('button:text("SET COUNT TO 2")');
-  //   const countText = await page.locator("p").textContent();
-  //   expect(countText).toBe("Value: 2");
-  // });
+  test("should show test after setting options", async ({ page }) => {
+    const spinButton = await waitForElementAndAssert(
+      page,
+      '[data-test="spin-button"]',
+      "visible"
+    );
+    spinButton.click();
+    await page.waitForTimeout(6000);
+    await expect(spinButton).toHaveText("START TEST");
 
-  // test("should trigger spin on the wheel", async ({ page }) => {
-  //   await page.click('button:text("SPIN")');
+    await spinButton.click();
+    const quizTitle = await waitForElementAndAssert(
+      page,
+      '[data-test="quiz-title"]',
+      "visible"
+    );
+    page.locator('[data-test="quiz-title"]');
+    const closeButton = await waitForElementAndAssert(
+      page,
+      '[data-test="close-test-button"]',
+      "visible"
+    );
 
-  //   // Sprawdzamy, czy "mustStartSpinning" jest aktywne przez sprawdzenie DOM (jeśli Wheel renderuje coś widocznego podczas spinu).
-  //   const wheel = await page.locator(".custom-roulette-container"); // Zmienna klasa CSS w Wheel
-  //   await expect(wheel).toBeVisible();
-
-  //   // Czekamy, aż Wheel przestanie się kręcić (symulujemy zakończenie spinu)
-  //   await page.waitForTimeout(3000); // Zakładamy, że animacja trwa maksymalnie 3 sekundy
-
-  //   // const countText = await page.locator("p").textContent();
-  //   // expect(countText).toContain("Value"); // Sprawdzamy, czy aplikacja wciąż działa poprawnie
-  // });
-
-  // test("should disable SPIN button while wheel is spinning", async ({
-  //   page,
-  // }) => {
-  //   await page.click('button:text("SPIN")');
-
-  //   const spinButton = await page.locator('button:text("SPIN")');
-  //   await expect(spinButton).toBeDisabled(); // Przy założeniu, że aplikacja dezaktywuje przycisk
-
-  //   await page.waitForTimeout(3000); // Zakładamy czas animacji Wheel
-
-  //   await expect(spinButton).toBeEnabled(); // Po zakończeniu spinu przycisk jest ponownie aktywny
-  // });
+    await expect(quizTitle).toBeVisible();
+    await expect(closeButton).toBeVisible();
+  });
 });

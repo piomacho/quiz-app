@@ -180,25 +180,34 @@ function Roulette() {
   return (
     <QueryClientProvider client={queryClient}>
       <Container>
-        <Wheel
-          mustStartSpinning={mustSpin}
-          prizeNumber={prizeNumber}
-          data={data}
-          spinDuration={0.5}
-          onStopSpinning={() => {
-            dispatch(setMustSpin(false));
-            dispatch(setCategory(data[prizeNumber].option));
-            setIsTestReady(true);
-          }}
-        />
-        <SpinButton isTestReady={isTestReady} onClick={handleSpinClick}>
+        <div data-test="roulette-wheel">
+          <Wheel
+            mustStartSpinning={mustSpin}
+            prizeNumber={prizeNumber}
+            data={data}
+            spinDuration={0.5}
+            onStopSpinning={() => {
+              dispatch(setMustSpin(false));
+              dispatch(setCategory(data[prizeNumber].option));
+              setIsTestReady(true);
+            }}
+          />
+        </div>
+
+        <SpinButton
+          data-test="spin-button"
+          isTestReady={isTestReady}
+          onClick={handleSpinClick}
+        >
           {isTestReady ? "START TEST" : "🎰 SPIN 🎰"}
         </SpinButton>
         <Slider difficultyLevel={difficultyLevel} />
 
         {isQuizOpen && (
           <Overlay>
-            <CloseButton onClick={closeTest}>✖</CloseButton>
+            <CloseButton data-test="close-test-button" onClick={closeTest}>
+              ✖
+            </CloseButton>
             <Quiz />
           </Overlay>
         )}
